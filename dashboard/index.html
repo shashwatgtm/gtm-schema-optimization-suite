@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Performance & Conversion Optimization Dashboard</title>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>🎯 Live Performance Dashboard</h1>
+                <div class="status-indicators">
+                    <div class="status-item" id="schemaStatus">
+                        <span class="status-dot"></span>
+                        <span>Schema Monitoring</span>
+                    </div>
+                    <div class="status-item" id="conversionStatus">
+                        <span class="status-dot"></span>
+                        <span>Conversion Tracking</span>
+                    </div>
+                    <div class="last-updated" id="lastUpdated">
+                        Last updated: <span id="updateTime">--</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav class="dashboard-nav">
+            <button class="nav-btn active" data-tab="overview">📊 Overview</button>
+            <button class="nav-btn" data-tab="schema">🔍 Schema Performance</button>
+            <button class="nav-btn" data-tab="conversion">🎯 Conversion Optimization</button>
+            <button class="nav-btn" data-tab="alerts">🚨 Alerts</button>
+        </nav>
+
+        <main class="dashboard-main">
+            <!-- Overview Tab -->
+            <section id="overview-tab" class="tab-content active">
+                <div class="metrics-grid">
+                    <div class="metric-card schema-metrics">
+                        <h3>Schema Performance</h3>
+                        <div class="metric-value" id="totalSchemas">--</div>
+                        <div class="metric-label">Active Schemas</div>
+                        <div class="metric-change" id="schemaChange">--</div>
+                    </div>
+                    <div class="metric-card rich-results">
+                        <h3>Rich Results</h3>
+                        <div class="metric-value" id="richResultsCount">--</div>
+                        <div class="metric-label">Detected in SERPs</div>
+                        <div class="metric-change" id="richResultsChange">--</div>
+                    </div>
+                    <div class="metric-card conversion-rate">
+                        <h3>Conversion Rate</h3>
+                        <div class="metric-value" id="conversionRate">--%</div>
+                        <div class="metric-label">Overall Performance</div>
+                        <div class="metric-change" id="conversionChange">--</div>
+                    </div>
+                    <div class="metric-card revenue">
+                        <h3>Pipeline Value</h3>
+                        <div class="metric-value" id="pipelineValue">$--</div>
+                        <div class="metric-label">Monthly Potential</div>
+                        <div class="metric-change" id="revenueChange">--</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Schema Performance Trend</h3>
+                        <canvas id="schemaPerformanceChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Conversion Funnel</h3>
+                        <canvas id="conversionFunnelChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>🔄 Recent Activity</h3>
+                    <div id="activityFeed" class="activity-feed">
+                        <div class="activity-loading">Loading recent activity...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schema Performance Tab -->
+            <section id="schema-tab" class="tab-content">
+                <div class="schema-overview">
+                    <div class="schema-health">
+                        <h3>Schema Health Status</h3>
+                        <div id="schemaHealthGrid" class="schema-health-grid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="validation-results">
+                        <h3>🔍 Live Validation Results</h3>
+                        <div id="validationResults" class="validation-grid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rich-results-tracking">
+                    <h3>📈 Rich Results Performance</h3>
+                    <div class="performance-metrics">
+                        <div class="metric">
+                            <span class="metric-value" id="avgPosition">--</span>
+                            <span class="metric-label">Avg Position</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="totalImpressions">--</span>
+                            <span class="metric-label">Impressions</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="totalClicks">--</span>
+                            <span class="metric-label">Clicks</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="avgCTR">--%</span>
+                            <span class="metric-label">CTR</span>
+                        </div>
+                    </div>
+                    <canvas id="richResultsChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Conversion Optimization Tab -->
+            <section id="conversion-tab" class="tab-content">
+                <div class="ab-tests-section">
+                    <h3>🧪 Active A/B Tests</h3>
+                    <div id="abTestsGrid" class="ab-tests-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button class="btn-primary" onclick="createNewTest()">Create New Test</button>
+                </div>
+
+                <div class="funnel-analysis">
+                    <h3>📊 Conversion Funnel Analysis</h3>
+                    <div id="funnelSteps" class="funnel-steps">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="optimization-insights">
+                    <h3>💡 AI Optimization Insights</h3>
+                    <div id="optimizationInsights" class="insights-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts Tab -->
+            <section id="alerts-tab" class="tab-content">
+                <div class="alerts-config">
+                    <h3>🚨 Alert Configuration</h3>
+                    <div class="alert-settings">
+                        <div class="setting-group">
+                            <label>Schema Validation Errors</label>
+                            <input type="checkbox" id="schemaAlerts" checked>
+                            <span class="checkmark"></span>
+                        </div>
+                        <div class="setting-group">
+                            <label>Rich Results Performance Drop</label>
+                            <input type="checkbox" id="performanceAlerts" checked>
+                            <span class="checkmark"></span>
+                        </div>
+                        <div class="setting-group">
+                            <label>Conversion Rate Changes</label>
+                            <input type="checkbox" id="conversionAlerts" checked>
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-alerts">
+                    <h3>📋 Recent Alerts</h3>
+                    <div id="alertsFeed" class="alerts-feed">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/charts.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
