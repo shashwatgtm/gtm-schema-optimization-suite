@@ -1,0 +1,67 @@
+{
+  "name": "gtm-schema-optimization-suite",
+  "version": "1.0.0",
+  "description": "Complete GTM Schema Performance Monitoring and Conversion Optimization Suite with live data integration",
+  "main": "server/app.js",
+  "scripts": {
+    "dev": "nodemon server/app.js",
+    "start": "node server/app.js",
+    "build": "npm run build:dashboard",
+    "build:dashboard": "webpack --mode production",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.html",
+    "validate-schemas": "node scripts/validate-schemas.js",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "googleapis": "^126.0.1",
+    "node-cron": "^3.0.2",
+    "redis": "^4.6.8",
+    "mongoose": "^7.5.0",
+    "axios": "^1.5.0",
+    "cheerio": "^1.0.0-rc.12",
+    "jsonld": "^8.2.0",
+    "helmet": "^7.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "winston": "^3.10.0",
+    "joi": "^17.9.2",
+    "rate-limiter-flexible": "^2.5.0",
+    "socket.io": "^4.7.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.2",
+    "eslint": "^8.47.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "@types/jest": "^29.5.4"
+  },
+  "keywords": [
+    "gtm",
+    "google-tag-manager",
+    "schema-markup",
+    "conversion-optimization",
+    "ab-testing",
+    "analytics",
+    "seo",
+    "performance-monitoring"
+  ],
+  "author": "Shashwat Ghosh <shashwat@gtmexpert.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shashwatgtm/gtm-schema-optimization-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shashwatgtm/gtm-schema-optimization-suite/issues"
+  },
+  "homepage": "https://github.com/shashwatgtm/gtm-schema-optimization-suite#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
