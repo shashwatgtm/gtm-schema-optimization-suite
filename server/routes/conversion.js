@@ -1,7 +1,6 @@
 // Conversion Optimization Routes
 const express = require('express');
 const router = express.Router();
-const { getConversionFunnel, getABTestResults, createABTest } = require('../services/conversionService');
 
 // Get conversion funnel data
 router.get('/funnel', async (req, res) => {
@@ -102,36 +101,6 @@ router.get('/tests', async (req, res) => {
                     significance: 0.47,
                     winner: null,
                     lift: 20.0
-                },
-                {
-                    id: 'pricing-layout-test',
-                    name: 'Pricing Page Layout',
-                    status: 'running',
-                    startDate: '2025-06-28',
-                    endDate: '2025-07-18',
-                    traffic: 0.5,
-                    variants: [
-                        {
-                            name: 'cards',
-                            traffic: 0.5,
-                            visitors: 892,
-                            conversions: 27,
-                            conversionRate: 3.03,
-                            confidence: 0
-                        },
-                        {
-                            name: 'table',
-                            traffic: 0.5,
-                            visitors: 876,
-                            conversions: 35,
-                            conversionRate: 3.99,
-                            confidence: 73
-                        }
-                    ],
-                    metric: 'fractional_cmo',
-                    significance: 0.73,
-                    winner: null,
-                    lift: 31.7
                 }
             ],
             completed: [
@@ -145,16 +114,6 @@ router.get('/tests', async (req, res) => {
                     lift: 42.3,
                     significance: 0.99,
                     implemented: true
-                }
-            ],
-            draft: [
-                {
-                    id: 'social-proof-test',
-                    name: 'Social Proof Placement',
-                    status: 'draft',
-                    metric: 'consultation_booking',
-                    estimatedLift: 15,
-                    readyToLaunch: true
                 }
             ]
         };
@@ -179,7 +138,7 @@ router.post('/tests', async (req, res) => {
         const { name, variants, metric, traffic, duration } = req.body;
         
         const newTest = {
-            id: `${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+            id: `${name.toLowerCase().replace(/\\s+/g, '-')}-${Date.now()}`,
             name,
             status: 'draft',
             variants,
@@ -187,9 +146,7 @@ router.post('/tests', async (req, res) => {
             traffic: traffic || 0.5,
             duration: duration || 21,
             createdAt: new Date().toISOString(),
-            createdBy: 'user', // In real app, get from auth
-            estimatedSampleSize: Math.ceil(1000 / (traffic || 0.5)),
-            estimatedDuration: duration || 21
+            createdBy: 'user'
         };
         
         res.status(201).json({
@@ -215,71 +172,27 @@ router.get('/insights', async (req, res) => {
                 {
                     id: 'conversion-opportunity',
                     title: '🎯 Conversion Opportunity',
-                    description: 'Your consultation booking rate is 18% above industry average, but the lead-to-consultation gap presents a $140K annual opportunity. Consider implementing progressive profiling.',
+                    description: 'Your consultation booking rate is 18% above industry average, but the lead-to-consultation gap presents a $140K annual opportunity.',
                     impact: 'high',
                     estimatedLift: 35,
-                    estimatedRevenue: 140000,
-                    actionItems: [
-                        'Implement progressive profiling',
-                        'Add lead scoring system',
-                        'Create nurture email sequence'
-                    ]
+                    estimatedRevenue: 140000
                 },
                 {
                     id: 'mobile-experience',
                     title: '📱 Mobile Experience',
-                    description: 'Mobile users have 23% lower conversion rates. Key issues: form abandonment at 67% and CTA visibility below 50%. Mobile optimization could increase revenue by $85K annually.',
+                    description: 'Mobile users have 23% lower conversion rates. Mobile optimization could increase revenue by $85K annually.',
                     impact: 'high',
                     estimatedLift: 23,
-                    estimatedRevenue: 85000,
-                    actionItems: [
-                        'Optimize mobile forms',
-                        'Improve CTA visibility',
-                        'Reduce page load time'
-                    ]
-                },
-                {
-                    id: 'timing-optimization',
-                    title: '⏰ Timing Optimization',
-                    description: 'Peak conversion times: Tue-Thu 10AM-2PM IST. Scheduling CTAs and follow-ups during these windows could improve close rates by 28%.',
-                    impact: 'medium',
-                    estimatedLift: 28,
-                    estimatedRevenue: 45000,
-                    actionItems: [
-                        'Schedule email campaigns for peak times',
-                        'Optimize ad scheduling',
-                        'Add time-based CTAs'
-                    ]
+                    estimatedRevenue: 85000
                 }
             ],
             recommendations: [
                 {
                     priority: 'high',
                     title: 'Implement Smart Lead Scoring',
-                    description: 'Current lead qualification is manual. Implementing AI-powered scoring could increase consultation booking rates by 35% and save 12 hours weekly.',
+                    description: 'Current lead qualification is manual. AI-powered scoring could increase booking rates by 35%.',
                     estimatedImpact: 156000,
-                    implementationTime: '2 weeks',
-                    effort: 'medium'
-                },
-                {
-                    priority: 'high',
-                    title: 'Mobile Conversion Optimization',
-                    description: 'Mobile conversion rate is 23% below desktop. Optimizing mobile experience could capture additional $85K in lost revenue.',
-                    estimatedImpact: 85000,
-                    implementationTime: '3 weeks',
-                    effort: 'high'
-                }
-            ],
-            performanceAlerts: [
-                {
-                    type: 'opportunity',
-                    message: 'Case study page visitors have 3.2x higher booking rates - consider adding more case studies',
-                    severity: 'medium'
-                },
-                {
-                    type: 'warning',
-                    message: 'Mobile bounce rate increased 15% this week',
-                    severity: 'high'
+                    implementationTime: '2 weeks'
                 }
             ]
         };
@@ -311,42 +224,15 @@ router.get('/attribution', async (req, res) => {
                     'linkedin/social': { conversions: 6, revenue: 120000, percentage: 26.1 },
                     'direct/none': { conversions: 3, revenue: 60000, percentage: 13.0 },
                     'google/cpc': { conversions: 2, revenue: 40000, percentage: 8.7 }
-                },
-                byCampaign: {
-                    'gtm-expertise': { conversions: 8, revenue: 160000 },
-                    'fractional-cmo': { conversions: 7, revenue: 140000 },
-                    'organic-search': { conversions: 5, revenue: 100000 },
-                    'linkedin-content': { conversions: 3, revenue: 60000 }
                 }
             },
             customerJourney: {
                 averageTouchpoints: 4.2,
-                averageJourneyLength: 18, // days
+                averageJourneyLength: 18,
                 topPaths: [
                     { path: 'Google → Homepage → Services → Contact', conversions: 8 },
-                    { path: 'LinkedIn → About → Services → Contact', conversions: 6 },
-                    { path: 'Direct → Homepage → Contact', conversions: 3 }
+                    { path: 'LinkedIn → About → Services → Contact', conversions: 6 }
                 ]
-            },
-            attribution: {
-                firstTouch: {
-                    'google/organic': 45.2,
-                    'linkedin/social': 28.6,
-                    'direct/none': 19.0,
-                    'referral': 7.2
-                },
-                lastTouch: {
-                    'direct/none': 39.1,
-                    'google/organic': 34.8,
-                    'linkedin/social': 17.4,
-                    'google/cpc': 8.7
-                },
-                timeDecay: {
-                    'google/organic': 42.1,
-                    'linkedin/social': 24.3,
-                    'direct/none': 21.7,
-                    'google/cpc': 11.9
-                }
             }
         };
         
