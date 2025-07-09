@@ -1,8 +1,6 @@
 // Schema Performance Monitoring Routes
 const express = require('express');
 const router = express.Router();
-const { validateSchemas, getSearchConsoleData, getRichResultsData } = require('../services/schemaService');
-const { authenticateRequest } = require('../middleware/auth');
 
 // Get current schema status
 router.get('/status', async (req, res) => {
